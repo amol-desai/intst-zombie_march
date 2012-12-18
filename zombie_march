@@ -1,0 +1,59 @@
+class Node(object):
+    def __init__(self,id):
+        self.id = id
+        self.nbors = []
+        self.numz_new = 0
+        self.numz_prev = 0
+
+    def add_nbor(self, obj):
+        self.nbors.append(obj)
+
+def calc_status(nodes,steps):
+    for k in range(steps):
+        for node in nodes:
+            node.numz_new = 0
+            for nbor in node.nbors:
+                node.numz_new += nbor.numz_prev/len(nbor.nbors)
+            stop = True
+        for node in nodes:
+            if abs(node.numz_prev - node.numz_new) > 0.000000001:
+                stop = False
+            node.numz_prev = node.numz_new
+        if stop:
+            #print k
+            return
+    
+##n = 10
+##k = 100000
+##n1 = [0,0,1,1,2,2,2,2,3,4,4,4,5,5,6,6,7,8]
+##n2 = [8,5,2,5,8,4,5,6,5,8,6,7,8,9,8,9,9,9]
+##a = [1,1,1,1,1,1,1,1,1,1]
+##nodes = []
+##for j in range(n):
+##    nodes.append(Node(j))
+##for j in range(len(n1)):
+##    nodes[n1[j]].add_nbor(nodes[n2[j]])
+##    nodes[n2[j]].add_nbor(nodes[n1[j]])
+##for j in range(len(a)):
+##    nodes[j].numz_prev = float(a[j])
+t = map(int,raw_input())[0]
+for i in range(t):
+    nodes = []
+    n,m,k = map(int,raw_input().split())
+    for j in range(n):
+        nodes.append(Node(j))
+    for j in range(m):
+        n1,n2 = map(int,raw_input().split())
+        nodes[n1].add_nbor(nodes[n2])
+        nodes[n2].add_nbor(nodes[n1])
+    for j in range(n):
+        nodes[j].numz_prev = float(map(int,raw_input())[0])
+    calc_status(nodes,k)
+    toprint = []
+    for node in nodes:
+        toprint.append(node.numz_prev)
+    while len(toprint) != 5:
+        toprint.remove(min(toprint))
+    toprint.sort(reverse=True)
+    print str(int(round(toprint[0])))+" "+str(int(round(toprint[1])))+" "+str(int(round(toprint[2])))+" "+str(int(round(toprint[3])))+" "+str(int(round(toprint[4])))
+        
